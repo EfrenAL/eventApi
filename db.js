@@ -22,11 +22,9 @@ db.user = sequelize.import(__dirname + '/models/user.js');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-//db.event.belongsTo(db.user);
-
-db.user.hasMany(db.event, {as: 'user', constraints: false, allowNull:true, defaultValue:null});
-db.event.hasMany(db.user, {as: 'event', constraints: false, allowNull:true, defaultValue:null});
-
+db.event.belongsTo(db.user);
+db.user.hasMany(db.event);
+//db.event.hasMany(db.user)
 
 /*
 db.day.belongsTo(db.job);
