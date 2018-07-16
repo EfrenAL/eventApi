@@ -20,6 +20,104 @@ app.use(express.static(__dirname + '/public'));
 
 //**************** CLIENT/Event ************************
 
+
+//Get events by id
+app.get('/event/:id', function (req, res) {
+    var eventId = parseInt(req.params.id, 10);
+
+    db.event.findById(eventId).then(function (event) {
+        if (!!event) {
+            res.json(event.toJSON())
+        } else {
+            res.status(404).send();
+        }
+    }, function (e) {
+        res.status(500).send();
+    });
+});
+
+//Get /events?completed=true&q=work
+app.get('/events', function (req, res) {
+    //Attributes sent in the request e.g. completed, name etc
+    var query = req.query;
+
+    db.event.findAll().then(function (event) {
+        res.json(event);
+    }, function (e) {
+        res.status(500).send();
+    });
+});
+
+//POST  /event/   POST NEW EVENT
+app.post('/newevent', function (req, res) {
+
+    //Check the data model before inserting it into the db
+    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country');
+
+    db.event.create(requestBody).then(function (event) {
+        res.json(event.toJSON());
+    }, function (e) {
+        res.status(400).json(e);
+    });
+
+
+});
+
+//************ EVENT END
+
+//******    Events per User *******
+
+
+
+//POST  /event/    USER <----> EVENT      Empareja un eventId con un userId
+app.post('/user-event/:id', middleware.requireAuthentication, function (req, res) {
+
+    //Check the data model before inserting it into the db
+    var eventId = parseInt(req.params.id, 10);
+
+    console.log('########Log eventId************: ' + eventId);
+
+    db.event.findById(eventId).then(function (event) {
+        req.user.addEvents(event).then(function (response) {
+            res.status(200).send();
+        }).then(function (event) {
+            res.status(500).send();
+        });
+    }, function (e) {
+        res.status(500).send();
+    });
+
+
+});
+
+//User events        Muestra los events asociados a un userId
+app.get('/user-event', middleware.requireAuthentication, function (req, res) {
+    //Attributes sent in the request e.g. completed, name etc
+
+    /*req.user.findEvents().then(function (event) {
+        res.json(event);
+    }, function (e) {
+        res.status(500).send();
+    });*/
+
+    db.user.findAll({
+      include: [{
+        model: db.event,
+        through: {
+          where: {userId: 1}
+        }
+      }]
+    }).then(function (event) {
+              res.json(event);
+          }, function (e) {
+              res.status(500).send();
+          });
+
+
+});
+
+//********END
+
 //Get /events?completed=true&q=work
 app.get('/events', middleware.requireAuthentication, function (req, res) {
     //Attributes sent in the request e.g. completed, name etc
@@ -38,7 +136,7 @@ app.get('/events', middleware.requireAuthentication, function (req, res) {
 });
 
 //Get events by id
-app.get('/events/:id'/*, middleware.requireAuthentication*/, function (req, res) {
+app.get('/event/:id'/*, middleware.requireAuthentication*/, function (req, res) {
     var eventId = parseInt(req.params.id, 10);
 
     db.event.findById(eventId).then(function (event) {
@@ -53,14 +151,14 @@ app.get('/events/:id'/*, middleware.requireAuthentication*/, function (req, res)
 });
 
 
-//POST  /event/
+//POST  /event/    USER <----> EVENT
 app.post('/event', middleware.requireAuthentication, function (req, res) {
 
     //Check the data model before inserting it into the db
     var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country');
 
     db.event.create(requestBody).then(function (event) {
-        req.user.addJob(event).then(function () {
+        req.user.addEvent(event).then(function () {
             return event.reload();
         }).then(function (event) {
             res.json(event.toJSON());

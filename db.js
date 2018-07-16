@@ -18,13 +18,14 @@ var db = {};
 db.day = sequelize.import(__dirname + '/models/day.js');
 db.event = sequelize.import(__dirname + '/models/event.js');
 db.user = sequelize.import(__dirname + '/models/user.js');
+db.userEvent = sequelize.define('userEvents')
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.event.belongsTo(db.user);
-db.user.hasMany(db.event);
-//db.event.hasMany(db.user)
+//db.event.belongsTo(db.user);
+db.user.belongsToMany(db.event, {through: 'userEvents'});
+db.event.belongsToMany(db.user, {through: 'userEvents'})
 
 /*
 db.day.belongsTo(db.job);
