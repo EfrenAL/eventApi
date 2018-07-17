@@ -21,7 +21,7 @@ app.use(express.static(__dirname + '/public'));
 //**************** CLIENT/Event ************************
 
 
-//Get events by id
+//Get event by id
 app.get('/event/:id', function (req, res) {
     var eventId = parseInt(req.params.id, 10);
 
@@ -49,7 +49,7 @@ app.get('/events', function (req, res) {
 });
 
 //POST  /event/   POST NEW EVENT
-app.post('/newevent', function (req, res) {
+app.post('/event', function (req, res) {
 
     //Check the data model before inserting it into the db
     var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country');
@@ -67,15 +67,10 @@ app.post('/newevent', function (req, res) {
 
 //******    Events per User *******
 
-
-
 //POST  /event/    USER <----> EVENT      Empareja un eventId con un userId
 app.post('/user-event/:id', middleware.requireAuthentication, function (req, res) {
 
-    //Check the data model before inserting it into the db
     var eventId = parseInt(req.params.id, 10);
-
-    console.log('########Log eventId************: ' + eventId);
 
     db.event.findById(eventId).then(function (event) {
         req.user.addEvents(event).then(function (response) {
@@ -86,35 +81,47 @@ app.post('/user-event/:id', middleware.requireAuthentication, function (req, res
     }, function (e) {
         res.status(500).send();
     });
-
-
 });
 
 //User events        Muestra los events asociados a un userId
 app.get('/user-event', middleware.requireAuthentication, function (req, res) {
-    //Attributes sent in the request e.g. completed, name etc
 
-    /*req.user.findEvents().then(function (event) {
-        res.json(event);
-    }, function (e) {
-        res.status(500).send();
-    });*/
-
-    db.user.findAll({
+    db.user.find({
+      where: {id: req.user.id},
       include: [{
         model: db.event,
         through: {
-          where: {userId: 1}
+          where: {userId: req.user.id}
         }
       }]
     }).then(function (event) {
-              res.json(event);
-          }, function (e) {
-              res.status(500).send();
-          });
-
-
+      res.json(event);
+    }, function (e) {
+      res.status(500).send();
+    });
 });
+
+//****** User associated with an event *******
+
+app.get('/event-user/:id', middleware.requireAuthentication, function (req, res) {
+
+    var eventId = parseInt(req.params.id, 10);
+
+    db.event.find({
+      where: {id: eventId},
+      include: [{
+        model: db.user/*,
+        through: {
+          where: {eventId: eventId}
+        }*/
+      }]
+    }).then(function (users) {
+      res.json(users);
+    }, function (e) {
+      res.status(500).send();
+    });
+});
+
 
 //********END
 
@@ -134,41 +141,6 @@ app.get('/events', middleware.requireAuthentication, function (req, res) {
         res.status(500).send();
     });
 });
-
-//Get events by id
-app.get('/event/:id'/*, middleware.requireAuthentication*/, function (req, res) {
-    var eventId = parseInt(req.params.id, 10);
-
-    db.event.findById(eventId).then(function (event) {
-        if (!!event) {
-            res.json(event.toJSON())
-        } else {
-            res.status(404).send();
-        }
-    }, function (e) {
-        res.status(500).send();
-    });
-});
-
-
-//POST  /event/    USER <----> EVENT
-app.post('/event', middleware.requireAuthentication, function (req, res) {
-
-    //Check the data model before inserting it into the db
-    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country');
-
-    db.event.create(requestBody).then(function (event) {
-        req.user.addEvent(event).then(function () {
-            return event.reload();
-        }).then(function (event) {
-            res.json(event.toJSON());
-        });
-    }, function (e) {
-        res.status(400).json(e);
-    });
-
-});
-
 
 //Delete /event/:id
 app.delete('/event/:id', middleware.requireAuthentication, function (req, res) {
@@ -349,7 +321,7 @@ app.post('/days', middleware.requireAuthentication, function (req, res) {
 
 //Route page
 app.get('/', function (req, res) {
-    res.send('Fresh API Root');
+    res.send('Bquini API Root');
 });
 
 
