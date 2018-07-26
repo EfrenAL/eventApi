@@ -237,25 +237,22 @@ app.post('/users/login', function (req, res) {
 });
 
 //Update PUT /users/:id
-app.put('/users/:id', middleware.requireAuthentication, function (req, res) {
-    //
-    var userId = parseInt(req.params.id, 10);
+app.put('/users', middleware.requireAuthentication, function (req, res) {
 
     //Validate data
-    var requestBody = _.pick(req.body, 'name', 'description', 'email');
+    var requestBody = _.pick(req.body, 'name', 'description');
     var attribute = {};
 
-    if (requestBody.hasOwnProperty('completed')) {
-        attribute.completed = requestBody.completed;
-    } else if (requestBody.hasOwnProperty('completed')) {
-        res.status(400).send();
-    }
 
     if (requestBody.hasOwnProperty('name')) {
         attribute.name = requestBody.name;
     }
 
-    db.user.findById(userId).then(function (user) {
+    if (requestBody.hasOwnProperty('description')) {
+        attribute.description = requestBody.description;
+    }
+
+    db.user.findById(req.user.id).then(function (user) {
         if (user) {
             user.update(attribute).then(function (user) {
                 res.json(user.toJSON())
