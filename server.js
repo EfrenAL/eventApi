@@ -240,7 +240,7 @@ app.post('/users/login', function (req, res) {
 app.put('/users', middleware.requireAuthentication, function (req, res) {
 
     //Validate data
-    var requestBody = _.pick(req.body, 'name', 'description');
+    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl');
     var attribute = {};
 
 
@@ -250,6 +250,10 @@ app.put('/users', middleware.requireAuthentication, function (req, res) {
 
     if (requestBody.hasOwnProperty('description')) {
         attribute.description = requestBody.description;
+    }
+
+    if (requestBody.hasOwnProperty('pictureUrl')) {
+        attribute.pictureUrl = requestBody.pictureUrl;
     }
 
     db.user.findById(req.user.id).then(function (user) {
