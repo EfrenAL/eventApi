@@ -48,6 +48,10 @@ exports.updateUser = function (req, res) {
 
     if (requestBody.hasOwnProperty('pictureUrl')) attribute.pictureUrl = requestBody.pictureUrl;
 
+    console.log('Name: ', attribute.name);
+    console.log('Description: ', attribute.description);
+    console.log('PictureUrl: ', attribute.pictureUrl);
+
     db.user.findById(req.user.id).then(function (user) {
         if (user) {
             user.update(attribute).then(function (user) {
