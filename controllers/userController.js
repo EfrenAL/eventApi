@@ -42,11 +42,11 @@ exports.updateUser = function (req, res) {
     var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl');
     var attribute = {};
 
-    if (requestBody.hasOwnProperty('name')) attribute.name = requestBody.name;
+    if (requestBody.hasOwnProperty('name') && requestBody.name !== "") attribute.name = requestBody.name;
 
-    if (requestBody.hasOwnProperty('description'))  attribute.description = requestBody.description;
+    if (requestBody.hasOwnProperty('description') && requestBody.description !== "")  attribute.description = requestBody.description;
 
-    if (requestBody.hasOwnProperty('pictureUrl')) attribute.pictureUrl = requestBody.pictureUrl;
+    if (requestBody.hasOwnProperty('pictureUrl') && requestBody.pictureUrl !== "") attribute.pictureUrl = requestBody.pictureUrl;
 
     console.log('Name: ', attribute.name);
     console.log('Description: ', attribute.description);
