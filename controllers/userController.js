@@ -53,7 +53,7 @@ exports.updateUser = function (req, res) {
             user.update(attribute).then(function (user) {
                 res.json(user.toPublicJSON())
             }, function (e) {
-                res.status(400).send();
+                res.status(400).send('NO user with this Auth token');
             });
         } else {
             res.status(404).send();
