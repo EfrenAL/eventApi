@@ -27,7 +27,7 @@ app.post('/event', eventController.createEvent);
 
 app.get('/event/all', eventController.getEvents);
 
-app.get('/event/:id', eventController.getEvent);
+app.get('/event/:eventCode', eventController.getEvent);
 
 app.delete('/event/:id', eventController.deleteEvent);
 

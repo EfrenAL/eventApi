@@ -15,6 +15,14 @@ module.exports = function(sequelize, DataTypes){
                 len: [1, 50]
           }
         },
+        code: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            validate: {
+                len: [1, 20]
+            }
+        },
         postcode: {
             type: DataTypes.STRING,
             allowNull: false,

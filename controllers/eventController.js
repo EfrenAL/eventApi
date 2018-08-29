@@ -5,7 +5,7 @@ var _ = require('underscore');
 exports.createEvent = function (req, res) {
 
     //Check the data model before inserting it into the db
-    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country', 'pictureUrl', 'thumbnailUrl', 'webUrl');
+    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country', 'pictureUrl', 'thumbnailUrl', 'webUrl', 'code');
 
     db.event.create(requestBody).then(function (event) {
         res.json(event.toJSON());
@@ -24,10 +24,24 @@ exports.getEvents = function (req, res) {
     });
 };
 
-//Get event by Id
+//Get event by eventId
 exports.getEvent = function (req, res) {
-    var eventId = parseInt(req.params.id, 10);
 
+
+    db.event.find({
+      where: {code: req.params.eventCode}
+    }).then(function (event) {
+        if (!!event) {
+            res.json(event.toJSON())
+        } else {
+            res.status(404).send();
+        }
+    }, function (e) {
+      res.status(500).send();
+    });
+
+    //GET BY ID move to another method
+    /*var eventId = parseInt(req.params.id, 10);
     db.event.findById(eventId).then(function (event) {
         if (!!event) {
             res.json(event.toJSON())
@@ -36,7 +50,7 @@ exports.getEvent = function (req, res) {
         }
     }, function (e) {
         res.status(500).send();
-    });
+    });*/
 };
 
 //Delete event by id
@@ -65,7 +79,7 @@ exports.updateEvent = function (req, res) {
     var eventId = parseInt(req.params.id, 10);
 
     //Validate data
-    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl', 'thumbnailUrl', 'webUrl');
+    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl', 'thumbnailUrl', 'webUrl', 'code');
     var attribute = {};
 
     if (requestBody.hasOwnProperty('name')) {
