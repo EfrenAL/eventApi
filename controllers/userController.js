@@ -70,9 +70,11 @@ exports.updateUser = function (req, res) {
 //Link user with an event by eventId
 exports.linkUserEvent = function (req, res) {
 
-    var eventId = parseInt(req.params.id, 10);
+    //var eventId = parseInt(req.params.id, 10);
 
-    db.event.findById(eventId).then(function (event) {
+    db.event.find({
+        where: {code: req.params.eventCode}
+    }).then(function (event) {
         req.user.addEvents(event).then(function (response) {
             res.status(200).send();
         }).then(function (event) {

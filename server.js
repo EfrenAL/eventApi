@@ -43,7 +43,7 @@ app.post('/user/login', userController.loginUser);
 
 app.put('/user', middleware.requireAuthentication, userController.updateUser);
 
-app.post('/user/event/:id', middleware.requireAuthentication, userController.linkUserEvent);
+    app.post('/user/event/:eventCode', middleware.requireAuthentication, userController.linkUserEvent);
 
 app.get('/user/event/all', middleware.requireAuthentication, userController.getAllEvents);
 
