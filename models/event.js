@@ -56,6 +56,13 @@ module.exports = function(sequelize, DataTypes){
             validate: {
                 len: [1, 100]
             }
+        },
+        webUrl: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                len: [1, 100]
+            }
         }
     });
 };

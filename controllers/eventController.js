@@ -5,7 +5,7 @@ var _ = require('underscore');
 exports.createEvent = function (req, res) {
 
     //Check the data model before inserting it into the db
-    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country', 'pictureUrl', 'thumbnailUrl');
+    var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country', 'pictureUrl', 'thumbnailUrl', 'webUrl');
 
     db.event.create(requestBody).then(function (event) {
         res.json(event.toJSON());
@@ -65,7 +65,7 @@ exports.updateEvent = function (req, res) {
     var eventId = parseInt(req.params.id, 10);
 
     //Validate data
-    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl', 'thumbnailUrl');
+    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl', 'thumbnailUrl', 'webUrl');
     var attribute = {};
 
     if (requestBody.hasOwnProperty('name')) {
