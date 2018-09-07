@@ -1,28 +1,44 @@
 var db = require('../db.js');
 var _ = require('underscore');
+var crypto = require('crypto');
+var pass = 'FbLogin'
 
 //Create new user
 exports.createUser = function (req, res) {
     var body = _.pick(req.body,'name', 'email', 'password');
+    signUp(body,res);
+};
 
-    db.user.create(body).then(function (user) {
-        var token = user.generateToken('authentication');
-        if (token) {
-            res.header('Auth', token).json(user.toPublicJSON());
-        } else {
-            res.status(401).send();
+//Login user
+exports.loginUser = function (req, res) {
+    var body = _.pick(req.body, 'email', 'password');
+    login(body, res)
+};
+
+//Login & Signup with facebook
+exports.loginSignUpUserFacebook = function (req, res) {
+
+    var body = _.pick(req.body, 'email', 'name', 'token');
+
+    db.user.findOne({
+        where:{
+            email: body.email
         }
-    }, function (e) {
+    }).then(function (user) {
+        body.password = generatePassword(body.email)
+        if(!user){
+            console.log('Social Login: ' + ' Sign Up user');
+            signUp(body, res);
+        }else{
+            console.log('Social Login: ' + ' Login user');
+            login(body, res);
+        }
+    },function (error) {
         res.status(400).json(e);
     });
 };
 
-
-//Login user
-exports.loginUser = function (req, res) {
-
-    var body = _.pick(req.body, 'email', 'password');
-
+function login(body, res){
     db.user.authenticate(body).then(function (user) {
         var token = user.generateToken('authentication');
         if (token) {
@@ -33,7 +49,26 @@ exports.loginUser = function (req, res) {
     }, function (error) {
         res.status(401).send();
     })
-};
+}
+
+function generatePassword(email){
+    var toHash = email + pass;
+    return crypto.createHash('md5').update(toHash).digest('hex');
+}
+
+function signUp(body, res){
+    db.user.create(body).then(function (user) {
+        var token = user.generateToken('authentication');
+        if (token) {
+            res.header('Auth', token).json(user.toPublicJSON());
+        } else {
+            res.status(401).send();
+        }
+    }, function (e) {
+        res.status(400).json(e);
+    });
+}
+
 
 //Update user
 exports.updateUser = function (req, res) {

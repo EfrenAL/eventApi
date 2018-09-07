@@ -41,9 +41,11 @@ app.post('/user', userController.createUser);
 
 app.post('/user/login', userController.loginUser);
 
+app.post('/user/facebook', userController.loginSignUpUserFacebook);
+
 app.put('/user', middleware.requireAuthentication, userController.updateUser);
 
-    app.post('/user/event/:eventCode', middleware.requireAuthentication, userController.linkUserEvent);
+app.post('/user/event/:eventCode', middleware.requireAuthentication, userController.linkUserEvent);
 
 app.get('/user/event/all', middleware.requireAuthentication, userController.getAllEvents);
 
