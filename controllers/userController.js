@@ -18,7 +18,7 @@ exports.loginUser = function (req, res) {
 //Login & Signup with facebook
 exports.loginSignUpUserFacebook = function (req, res) {
 
-    var body = _.pick(req.body, 'email', 'name', 'token');
+    var body = _.pick(req.body, 'email', 'name', 'token', 'pictureUrl');
 
     db.user.findOne({
         where:{
