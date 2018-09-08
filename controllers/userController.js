@@ -28,7 +28,7 @@ exports.loginSignUpUserFacebook = function (req, res) {
         body.password = generatePassword(body.email)
         if(!user){
             console.log('Social Login: ' + ' Sign Up user');
-            console.log('Values: ' + body.email + ', ' + body.name + ', ' + body.token + ', '+ body.pictureUrl )
+            console.log('Values: ' + body.email + ', ' + body.name + ', ' + body.password + ', ' + body.token + ', '+ body.pictureUrl )
             signUp(body, res);
         }else{
             console.log('Social Login: ' + ' Login user');
