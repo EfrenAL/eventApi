@@ -52,6 +52,20 @@ module.exports = function (sequelize, DataTypes) {
                 len: [1, 50]
             }
         },
+        company: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                len: [1, 50]
+            }
+        },
+        position: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                len: [1, 50]
+            }
+        },
         pictureUrl: {
             type: DataTypes.STRING,
             allowNull: true,
@@ -119,7 +133,8 @@ module.exports = function (sequelize, DataTypes) {
         instanceMethods: {
             toPublicJSON: function () {
                 var json = this.toJSON();
-                return _.pick(json,'id','email','name','description', 'pictureUrl','createdAt','updatedAt');
+                //return _.pick(json,'id','email','name','description', 'pictureUrl','createdAt','updatedAt');
+                return _.pick(json,'id','email','name','description', 'pictureUrl','company','position');
             },
             generateToken: function (type) {
                 if(!_.isString(type)){

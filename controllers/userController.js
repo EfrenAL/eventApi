@@ -79,7 +79,7 @@ exports.updateUser = function (req, res) {
     console.log('\n******** Update User ********');
 
     //Validate data
-    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl');
+    var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl','company','position');
     var attribute = {};
 
     if (requestBody.hasOwnProperty('name') && requestBody.name !== "") attribute.name = requestBody.name;
@@ -88,9 +88,15 @@ exports.updateUser = function (req, res) {
 
     if (requestBody.hasOwnProperty('pictureUrl') && requestBody.pictureUrl !== "") attribute.pictureUrl = requestBody.pictureUrl;
 
+    if (requestBody.hasOwnProperty('company') && requestBody.company !== "") attribute.company = requestBody.company;
+
+    if (requestBody.hasOwnProperty('position') && requestBody.position !== "") attribute.position = requestBody.position;
+
     console.log('Name: ', attribute.name);
     console.log('Description: ', attribute.description);
     console.log('PictureUrl: ', attribute.pictureUrl);
+    console.log('Company: ', attribute.company);
+    console.log('Position: ', attribute.position);
 
     db.user.findById(req.user.id).then(function (user) {
         if (user) {
