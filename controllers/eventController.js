@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 //Create single event
 exports.createEvent = function (req, res) {
-
+    console.log('\n******** Create event ********');
     //Check the data model before inserting it into the db
     var requestBody = _.pick(req.body, 'name', 'description', 'postcode', 'street', 'city', 'country', 'pictureUrl', 'thumbnailUrl', 'webUrl', 'code');
 
@@ -16,7 +16,7 @@ exports.createEvent = function (req, res) {
 
 //Get all events
 exports.getEvents = function (req, res) {
-
+    console.log('\n******** Get all events ********');
     db.event.findAll().then(function (event) {
         res.json(event);
     }, function (e) {
@@ -26,8 +26,7 @@ exports.getEvents = function (req, res) {
 
 //Get event by eventId
 exports.getEvent = function (req, res) {
-
-
+    console.log('\n******** Get event ********');
     db.event.find({
       where: {code: req.params.eventCode}
     }).then(function (event) {
@@ -55,7 +54,7 @@ exports.getEvent = function (req, res) {
 
 //Delete event by id
 exports.deleteEvent = function (req, res) {
-
+    console.log('\n******** Delete event ********');
     var eventId = parseInt(req.params.id, 10);
 
     db.event.destroy({
@@ -75,7 +74,7 @@ exports.deleteEvent = function (req, res) {
 
 //Update event by Id
 exports.updateEvent = function (req, res) {
-    //
+    console.log('\n******** Update event ********');
     var eventId = parseInt(req.params.id, 10);
 
     //Validate data
@@ -106,7 +105,7 @@ exports.updateEvent = function (req, res) {
 
 //Get all users associated with one event
 exports.getAllUsers = function (req, res) {
-
+    console.log('\n******** Get user for event ********');
     var eventId = parseInt(req.params.eventId, 10);
 
     db.event.find({
