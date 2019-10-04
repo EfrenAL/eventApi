@@ -8,10 +8,10 @@ var PORT = process.env.PORT || 3000;
 //Controllers
 var userController = require('./controllers/userController.js');
 var eventController = require('./controllers/eventController.js');
-var vehiclesController = require('./controllers/vehiclesController.js');
 
 //Middleware
 app.use(bodyParser.json());
+app.use(middleware.logger);
 app.use(express.static(__dirname + '/public'));
 
 //Allow CORS
@@ -38,6 +38,9 @@ app.get('/event/user/:eventId', middleware.requireAuthentication, eventControlle
 
 // #### User Domain ####
 
+
+app.get('/user/all', userController.getAllUsers);
+
 app.post('/user', userController.createUser);
 
 app.post('/user/login', userController.loginUser);
@@ -50,8 +53,6 @@ app.post('/user/event/:eventCode', middleware.requireAuthentication, userControl
 
 app.get('/user/event/all', middleware.requireAuthentication, userController.getAllEvents);
 
-//Test
-app.get('/vehicles', vehiclesController.getVehicles);
 
 //Route page
 app.get('/', function (req, res) {

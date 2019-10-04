@@ -3,23 +3,27 @@ var _ = require('underscore');
 var crypto = require('crypto');
 var pass = 'FbLogin'
 
+//Get all users
+
+exports.getAllUsers = function (req, res) {
+    getAllUsers(res);
+}; 
+
+
 //Create new user
 exports.createUser = function (req, res) {
-    console.log('\n******** Sign Up user ********');
     var body = _.pick(req.body,'name', 'email', 'password');
     signUp(body,res);
 };
 
 //Login user
 exports.loginUser = function (req, res) {
-    console.log('\n******** Login User ********');
     var body = _.pick(req.body, 'email', 'password');
     login(body, res)
 };
 
 //Login & Signup with facebook
 exports.loginSignUpUserFacebook = function (req, res) {
-    console.log('\n******** Login social media ********');
     var body = _.pick(req.body, 'email', 'name', 'token', 'pictureUrl');
 
     db.user.findOne({
@@ -72,11 +76,16 @@ function signUp(body, res){
     });
 }
 
+function getAllUsers(res){
+    db.user.findAll().then(function (users) {    
+        res.json(users);        
+    }, function (e) {
+        res.status(400).json(e);
+    });
+};
 
 //Update user
 exports.updateUser = function (req, res) {
-
-    console.log('\n******** Update User ********');
 
     //Validate data
     var requestBody = _.pick(req.body, 'name', 'description', 'pictureUrl','company','position');
@@ -115,8 +124,6 @@ exports.updateUser = function (req, res) {
 
 //Link user with an event by eventId
 exports.linkUserEvent = function (req, res) {
-
-    console.log('\n******** Link User and Event ********');
     //var eventId = parseInt(req.params.id, 10);
 
     db.event.find({
@@ -134,9 +141,6 @@ exports.linkUserEvent = function (req, res) {
 
 //Get all events for a single user
 exports.getAllEvents = function (req, res) {
-
-    console.log('\n******** Get All Events ********');
-    console.log('User ID: ' + req.user.id + "\n")
 
     db.user.find({
       where: {id: req.user.id},
