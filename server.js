@@ -75,4 +75,4 @@ db.sequelize.sync({force: true}).then(function () {
     app.listen(PORT, function () {
         console.log('Express runing on Port: ' + PORT);
     });
-});
+}); 
