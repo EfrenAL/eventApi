@@ -15,8 +15,17 @@ exports.createCountry = function (req, res) {
 
 //Get all events
 exports.getAllCountries = function (req, res) {
-    db.country.findAll().then(function (event) {
-        res.json(event);
+    db.country.findAll().then(function (countries) {
+
+        const map1 = countries.map(item => {
+            var rObj = {};
+            var countryName = item.uuid
+            rObj['country'] = countryName.charAt(0) + countryName.slice(1).toLowerCase();
+            rObj['pictureUrl'] = item.pictureUrl;
+            return rObj;            
+        });
+
+        res.json(map1);
     }, function (e) {
         res.status(500).send();
     });
