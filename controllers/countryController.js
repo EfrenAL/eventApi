@@ -20,7 +20,7 @@ exports.getAllCountries = function (req, res) {
         const map1 = countries.map(item => {
             var rObj = {};
             var countryName = item.uuid
-            rObj['country'] = countryName.charAt(0) + countryName.slice(1).toLowerCase();
+            rObj['name'] = countryName.charAt(0) + countryName.slice(1).toLowerCase();
             rObj['pictureUrl'] = item.pictureUrl;
             return rObj;            
         });
