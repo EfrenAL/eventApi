@@ -8,6 +8,8 @@ var PORT = process.env.PORT || 3000;
 //Controllers
 var userController = require('./controllers/userController.js');
 var eventController = require('./controllers/eventController.js');
+var countryController = require('./controllers/countryController.js');
+var coworkingController = require('./controllers/coworkingController.js');
 
 //Middleware
 app.use(bodyParser.json());
@@ -22,13 +24,22 @@ app.use(function(req, res, next) {
   next();
 });
 
+
+// #### Country Domain ####
+app.post('/country', countryController.createCountry);
+app.get('/country/all', countryController.getAllCountries);
+// #### Coworking Domain ####
+app.post('/coworking', coworkingController.createCoworking);
+app.get('/coworking/all', coworkingController.getAllCoworking);
+app.get('/coworking/:country', coworkingController.getAllCoworkingPerCountry);
+
 // #### Event Domain ####
 
 app.post('/event', eventController.createEvent);
 
 app.get('/event/all', eventController.getEvents);
 
-app.get('/event/:eventCode', eventController.getEvent);
+app.get('/event/:code', eventController.getEvent);
 
 app.delete('/event/:id', eventController.deleteEvent);
 

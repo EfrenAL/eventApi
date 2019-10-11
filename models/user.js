@@ -81,80 +81,81 @@ module.exports = function (sequelize, DataTypes) {
                     user.email = user.email.toLowerCase();
                 }
             }
-        },
-        classMethods:{
-            authenticate: function (body) {
-
-                return new Promise(function (resolve, reject) {
-                    if (typeof body.email !=='string' || typeof body.password !== 'string'){
-                        return reject();
-                    }
-
-                    user.findOne({
-                        where:{
-                            email: body.email
-                        }
-                    }).then(function (user) {
-                        if(!user || !bcrypt.compareSync(body.password, user.get('password_hash'))){
-                            return reject();
-                        }
-                        resolve(user);
-
-                    },function (error) {
-                        reject();
-                    });
-                })
-
-            },
-            findByToken: function(token){
-                return new Promise(function (resolve, reject) {
-                    try {
-                        console.log('User Token: ' + token + '\n')
-                        var decodeJwt = jwt.verify(token, 'qwerty098');
-                        var bytes = cryptojs.AES.decrypt(decodeJwt.token, 'abc123!@#!');
-                        var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
-                        console.log('User Id: ' + tokenData.id + '\n')
-                        user.findById(tokenData.id).then(function (user) {
-                            if(user){
-                                resolve(user);
-                            }else{
-                                reject();
-                            }
-                        },function (error) {
-                            reject();
-                        })
-
-                    }catch(e){
-                        reject();
-                    }
-                });
-            }
-        },
-        instanceMethods: {
-            toPublicJSON: function () {
-                var json = this.toJSON();
-                //return _.pick(json,'id','email','name','description', 'pictureUrl','createdAt','updatedAt');
-                return _.pick(json,'id','email','name','description', 'pictureUrl','company','position');
-            },
-            generateToken: function (type) {
-                if(!_.isString(type)){
-                    return undefined;
-                }
-                try {
-                    var stringData = JSON.stringify({id: this.get('id'), type: type})
-                    var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
-                    token = jwt.sign({
-                        token: encryptedData
-                    }, 'qwerty098');
-                    return token;
-                }catch (e){
-                    return undefined;
-                }
-
-
-            }
         }
     });
+
+    user.findByToken = function(token){
+        return new Promise(function (resolve, reject) {
+            try {
+                console.log('User Token: ' + token + '\n')
+                var decodeJwt = jwt.verify(token, 'qwerty098');
+                var bytes = cryptojs.AES.decrypt(decodeJwt.token, 'abc123!@#!');
+                var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+                console.log('User Id: ' + tokenData.id + '\n')
+                user.findByPk(tokenData.id).then(function (user) {
+                    console.log('User: ' + user + '\n')
+                    if(user){
+                        resolve(user);
+                    }else{
+                        reject();
+                    }
+                },function (error) {
+                    console.log('Errorr: ' + error + '\n')
+
+                    reject();
+                })
+
+            }catch(e){
+                console.log('Errorr: ' + e + '\n')
+                reject();
+            }
+        });
+    }
+
+    user.authenticate = function (body) {
+
+        return new Promise(function (resolve, reject) {
+            if (typeof body.email !=='string' || typeof body.password !== 'string'){
+                return reject();
+            }
+
+            user.findOne({
+                where:{
+                    email: body.email
+                }
+            }).then(function (user) {
+                if(!user || !bcrypt.compareSync(body.password, user.get('password_hash'))){
+                    return reject();
+                }
+                resolve(user);
+
+            },function (error) {
+                reject();
+            });
+        })
+    }
+
+    user.prototype.generateToken = function (type) {
+        if(!_.isString(type)){
+            return undefined;
+        }
+        try {
+            var stringData = JSON.stringify({id: this.get('id'), type: type})
+            var encryptedData = cryptojs.AES.encrypt(stringData, 'abc123!@#!').toString();
+            token = jwt.sign({
+                token: encryptedData
+            }, 'qwerty098');
+            return token;
+        }catch (e){
+            return undefined;
+        }
+    };
+
+    user.prototype.toPublicJSON = function () {
+        var json = this.toJSON();
+        //return _.pick(json,'id','email','name','description', 'pictureUrl','createdAt','updatedAt');
+        return _.pick(json,'id','email','name','description', 'pictureUrl','company','position');
+    };
 
     return user;
 };

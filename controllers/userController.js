@@ -107,7 +107,7 @@ exports.updateUser = function (req, res) {
     console.log('Company: ', attribute.company);
     console.log('Position: ', attribute.position);
 
-    db.user.findById(req.user.id).then(function (user) {
+    db.user.findByPk(req.user.id).then(function (user) {
         if (user) {
             user.update(attribute).then(function (user) {
                 res.json(user.toPublicJSON())

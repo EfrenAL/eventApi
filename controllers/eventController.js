@@ -24,8 +24,12 @@ exports.getEvents = function (req, res) {
 
 //Get event by eventId
 exports.getEvent = function (req, res) {
-    db.event.find({
-      where: {code: req.params.eventCode}
+    
+    var eventCode = req.query.eventCode
+    console.log('********* Event code: ' + req.query.eventCode )
+    
+    db.event.findOne({
+      where: {code: eventCode}
     }).then(function (event) {
         if (!!event) {
             res.json(event.toJSON())
