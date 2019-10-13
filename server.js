@@ -70,7 +70,7 @@ app.get('/', function (req, res) {
     res.send('Bquini API Root');
 });
 
-db.sequelize.sync({force: false}).then(function () {
+db.sequelize.sync({force: true}).then(function () {
     //We start the server here once the db is initialized
     app.listen(PORT, function () {
         console.log('Express runing on Port: ' + PORT);
