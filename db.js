@@ -15,12 +15,12 @@ if (env === 'production') {
 
 var db = {};
 
-// Coworking project
+// Place project
 db.country = sequelize.import(__dirname + '/models/country.js');
-db.coworking = sequelize.import(__dirname + '/models/coworking.js');
+db.place = sequelize.import(__dirname + '/models/place.js');
 
-db.coworking.belongsTo(db.country, {foreignKey: 'fk_countryid', sourceKey: 'uuid'});
-db.country.hasMany(db.coworking, {foreignKey: 'fk_countryid', targetKey: 'uuid'})
+db.place.belongsTo(db.country, {foreignKey: 'fk_countryid', sourceKey: 'uuid'});
+db.country.hasMany(db.place, {foreignKey: 'fk_countryid', targetKey: 'uuid'})
 //
 
 db.day = sequelize.import(__dirname + '/models/day.js');

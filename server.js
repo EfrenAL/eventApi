@@ -9,7 +9,7 @@ var PORT = process.env.PORT || 3000;
 var userController = require('./controllers/userController.js');
 var eventController = require('./controllers/eventController.js');
 var countryController = require('./controllers/countryController.js');
-var coworkingController = require('./controllers/coworkingController.js');
+var placeController = require('./controllers/placeController.js');
 
 //Middleware
 app.use(bodyParser.json());
@@ -28,10 +28,10 @@ app.use(function(req, res, next) {
 // #### Country Domain ####
 app.post('/country', countryController.createCountry);
 app.get('/country/all', countryController.getAllCountries);
-// #### Coworking Domain ####
-app.post('/coworking', coworkingController.createCoworking);
-app.get('/coworking/all', coworkingController.getAllCoworking);
-app.get('/coworking/:country', coworkingController.getAllCoworkingPerCountry);
+// #### Place Domain ####
+app.post('/place', placeController.createPlace);
+app.get('/place/all', placeController.getAllPlaces);
+app.get('/place/:country', placeController.getAllPlacesPerCountry);
 
 // #### Event Domain ####
 

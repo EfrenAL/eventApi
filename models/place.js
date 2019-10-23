@@ -1,6 +1,6 @@
 //We define new models
 module.exports = function(sequelize, DataTypes){
-    return sequelize.define('coworking', {
+    return sequelize.define('place', {
         name: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -47,6 +47,18 @@ module.exports = function(sequelize, DataTypes){
             validate: {
                 len: [1, 200]
             }
-        }
+        },        
+        coworking: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        surf: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        yoga: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
     });
 };
